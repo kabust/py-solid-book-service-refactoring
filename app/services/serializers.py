@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 
 class BookSerializer(ABC):
     @abstractmethod
-    def serialize(self, book_title: str, book_content: str):
+    def serialize(self, book_title: str, book_content: str) -> str:
         pass
 
 

@@ -1,23 +1,36 @@
 from app.services.book import Book
+from app.services.displayers import ConsoleDisplay, ReverseDisplay
+from app.services.printers import ConsolePrinter, ReversePrinter
 from app.services.serializers import JsonSerializer, XMLSerializer
 
 
 DEFAULT_SERIALIZER = JsonSerializer()
 
+COMMANDS_MAP = {
+    "display": {
+        "console": ConsoleDisplay(), "reverse": ReverseDisplay()
+    },
+    "print": {
+        "console": ConsolePrinter(), "reverse": ReversePrinter()
+    },
+    "serialize": {
+        "json": JsonSerializer(), "xml": XMLSerializer()
+    }
+}
+
 
 def main(book: Book, commands: list[tuple[str, str]]) -> None | str:
     for cmd, method_type in commands:
+
         if cmd == "display":
-            book.display(method_type)
+            COMMANDS_MAP[cmd][method_type].display(book)
+
         elif cmd == "print":
-            book.print_book(method_type)
+            COMMANDS_MAP[cmd][method_type].print_book(book)
+
         elif cmd == "serialize":
-            if method_type == "json":
-                serializer = JsonSerializer()
-            elif method_type == "xml":
-                serializer = XMLSerializer()
-            else:
-                serializer = DEFAULT_SERIALIZER
+            serializer = COMMANDS_MAP[cmd][method_type]
+
             return serializer.serialize(book.title, book.content)
 
 
